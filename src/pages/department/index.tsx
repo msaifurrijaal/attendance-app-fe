@@ -6,14 +6,14 @@ const Department = () => {
   return (
     <Stack direction="column" spacing="20px">
       <PageHeader
-        title="Departments"
+        title="Department"
         breadcrumbs={[
           {
             label: "Dashboard",
             href: "/dashboard",
           },
           {
-            label: "Departments",
+            label: "Department",
           },
         ]}
       />

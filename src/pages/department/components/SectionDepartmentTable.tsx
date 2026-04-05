@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   InputAdornment,
   Paper,
@@ -8,6 +9,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useCallback, useState } from "react";
 import { useGetDepartments } from "../services/getDepartments.service";
@@ -15,15 +17,24 @@ import { debounce } from "lodash";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useToast } from "@/contexts/ToastContext";
 import { useDeleteDepartment } from "../services/deleteDepartment.service";
+import type { Department } from "../types/department.type";
+import { ModalCreateEditDepartment } from "./ModalCreateEditDepartment";
 
 export const SectionDepartmentTable = () => {
   const { showToast } = useToast();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const rowsPerPage = 10;
   const [search, setSearch] = useState("");
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+  const [modalCreateEditOpen, setModalCreateEditOpen] = useState<{
+    open: boolean;
+    selectedData: Department | null;
+  }>({
+    open: false,
+    selectedData: null,
+  });
 
   const { data, isLoading } = useGetDepartments({
     page: page + 1,
@@ -35,7 +46,6 @@ export const SectionDepartmentTable = () => {
   const { mutateAsync: deleteDepartment, isPending: loadingDelete } =
     useDeleteDepartment();
 
-  // eslint-disable-next-line
   const debouncedSearch = useCallback(
     // eslint-disable-next-line
     debounce((value: string) => {
@@ -58,6 +68,9 @@ export const SectionDepartmentTable = () => {
       flex: 0.5,
       renderCell: (params) => (
         <Stack direction="row" spacing="4px">
+          <IconButton onClick={() => handleCreateEditClick(params.row)}>
+            <ModeEditIcon color="primary" />
+          </IconButton>
           <IconButton onClick={() => handleDeleteClick(params.row.id)}>
             <DeleteIcon color="error" />
           </IconButton>
@@ -65,6 +78,10 @@ export const SectionDepartmentTable = () => {
       ),
     },
   ];
+
+  const handleCreateEditClick = (data: Department | null) => {
+    setModalCreateEditOpen({ open: true, selectedData: data });
+  };
 
   const handleDeleteClick = (id: string) => {
     setSelectedDeleteId(id);
@@ -100,6 +117,13 @@ export const SectionDepartmentTable = () => {
           }}
           sx={{ width: 320 }}
         />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleCreateEditClick(null)}
+        >
+          Create Department
+        </Button>
       </Box>
 
       <Paper variant="outlined" sx={{ borderRadius: "8px" }}>
@@ -108,12 +132,11 @@ export const SectionDepartmentTable = () => {
           columns={columns}
           rowCount={data?.meta.total ?? 0}
           paginationMode="server"
-          paginationModel={{ page, pageSize: rowsPerPage }}
+          paginationModel={{ page, pageSize: 10 }}
           onPaginationModelChange={(model) => {
             setPage(model.page);
-            setRowsPerPage(model.pageSize);
           }}
-          pageSizeOptions={[5, 10, 25, 50]}
+          pageSizeOptions={[10]}
           loading={isLoading}
           disableRowSelectionOnClick
           autoHeight
@@ -127,6 +150,13 @@ export const SectionDepartmentTable = () => {
         onOk={handleConfirmDelete}
         onCancel={() => setConfirmDeleteOpen(false)}
         loading={loadingDelete}
+      />
+      <ModalCreateEditDepartment
+        open={modalCreateEditOpen.open}
+        onCancel={() =>
+          setModalCreateEditOpen({ open: false, selectedData: null })
+        }
+        selectedData={modalCreateEditOpen.selectedData}
       />
     </Stack>
   );

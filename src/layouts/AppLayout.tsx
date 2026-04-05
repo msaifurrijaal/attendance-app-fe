@@ -75,8 +75,8 @@ export default function AppLayout({ children }: Props) {
           icon: <PortraitIcon />,
           path: "/employee-attendance",
         },
-        { label: "Employees", icon: <PeopleIcon />, path: "/employees" },
-        { label: "Departments", icon: <BusinessIcon />, path: "/departments" },
+        { label: "Employee", icon: <PeopleIcon />, path: "/employee" },
+        { label: "Department", icon: <BusinessIcon />, path: "/department" },
       ];
 
       return [...items, ...restItems];

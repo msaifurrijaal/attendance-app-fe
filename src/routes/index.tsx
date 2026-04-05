@@ -8,6 +8,7 @@ import { RoleRoute } from "@/components/shared/RoleRoute";
 const LoginPage = lazy(() => import("../pages/auth/login"));
 const DashboardPage = lazy(() => import("../pages/dashboard"));
 const DepartmentPage = lazy(() => import("../pages/department"));
+const EmployeePage = lazy(() => import("../pages/employee"));
 
 const withLayout = (component: React.ReactNode) => (
   <AppLayout>
@@ -31,12 +32,24 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute>{withLayout(<DashboardPage />)} </ProtectedRoute>,
   },
   {
-    path: "/departments",
+    path: "/department",
     element: (
       <ProtectedRoute>
         {withLayout(
           <RoleRoute allowedRoles={["ADMIN_HR"]}>
             <DepartmentPage />
+          </RoleRoute>,
+        )}
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/employee",
+    element: (
+      <ProtectedRoute>
+        {withLayout(
+          <RoleRoute allowedRoles={["ADMIN_HR"]}>
+            <EmployeePage />
           </RoleRoute>,
         )}
       </ProtectedRoute>
