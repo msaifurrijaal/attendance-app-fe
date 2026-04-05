@@ -26,6 +26,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFetchUserMe } from "@/services/fetch/fetchUserMe.service";
 import { LoadingState } from "@/components/feedback/LoadingState";
+import { stringEmptyGuard } from "@/utils/guard";
 
 const SIDEBAR_WIDTH = 240;
 
@@ -146,10 +147,10 @@ export default function AppLayout({ children }: Props) {
           </Avatar>
           <Box overflow="hidden">
             <Typography variant="body2" fontWeight={500} noWrap>
-              John Doe
+              {user?.full_name}
             </Typography>
             <Typography variant="caption" color="text.secondary" noWrap>
-              Admin HR
+              {stringEmptyGuard(user?.role?.name)}
             </Typography>
           </Box>
         </Box>
