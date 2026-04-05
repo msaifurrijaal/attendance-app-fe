@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -9,12 +9,14 @@ interface Props {
   onImageUpload: (file: File | null) => void;
   onDeleteImage?: (imageUrl: string) => void;
   oldImage?: string | null;
+  loading?: boolean;
 }
 
 export const SingleImageUpload = ({
   onImageUpload,
   onDeleteImage,
   oldImage,
+  loading = false,
 }: Props) => {
   const [imagePreview, setImagePreview] = useState<string | null>(
     oldImage ?? null,
@@ -27,6 +29,7 @@ export const SingleImageUpload = ({
       setImagePreview(URL.createObjectURL(file));
       onImageUpload(file);
     }
+    e.target.value = "";
   };
 
   const handleRemove = (e: React.MouseEvent) => {
@@ -53,10 +56,11 @@ export const SingleImageUpload = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          cursor: "pointer",
+          cursor: loading ? "not-allowed" : "pointer",
           position: "relative",
           overflow: "hidden",
           bgcolor: imagePreview ? "grey.100" : "transparent",
+          pointerEvents: loading ? "none" : "auto",
         }}
       >
         <input
@@ -64,9 +68,24 @@ export const SingleImageUpload = ({
           hidden
           accept="image/jpg,image/jpeg,image/png,image/webp"
           onChange={handleImageChange}
+          disabled={loading}
         />
 
-        {imagePreview ? (
+        {loading ? (
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "rgba(0,0,0,0.4)",
+              borderRadius: "8px",
+            }}
+          >
+            <CircularProgress size={28} sx={{ color: "white" }} />
+          </Box>
+        ) : imagePreview ? (
           <>
             <Box
               component="img"

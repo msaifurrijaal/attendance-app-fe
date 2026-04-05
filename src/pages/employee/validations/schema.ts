@@ -1,12 +1,8 @@
 import { z } from 'zod';
 
-export const employeeSchema = z.object({
+const baseEmployeeSchema = z.object({
   full_name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email address'),
-  password: z
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, 'Password must contain letters and numbers'),
   role_id: z.object({
     id: z.string().min(1, 'Role is required'),
     name: z.string().min(1, 'Role is required'),
@@ -21,4 +17,16 @@ export const employeeSchema = z.object({
   image_url: z.string().optional(),
 });
 
-export type EmployeeForm = z.infer<typeof employeeSchema>;
+const addEmployeeSchema = baseEmployeeSchema.extend({
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, 'Password must contain letters and numbers'),
+});
+
+const editEmployeeSchema = baseEmployeeSchema;
+
+export const getEmployeeSchema = (type: 'add' | 'edit') =>
+  type === 'add' ? addEmployeeSchema : editEmployeeSchema;
+
+export type EmployeeForm = z.infer<typeof addEmployeeSchema>;

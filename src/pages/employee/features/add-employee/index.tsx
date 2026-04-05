@@ -1,15 +1,21 @@
-import { SingleImageUpload } from "@/components/common/SingleImageUpload";
-import React from "react";
+import { PageHeader } from "@/components/common/PageHeader";
+
+import { FormEmployee } from "../../components/FormEmployee";
+import { Stack } from "@mui/material";
 
 const AddEmployeePage = () => {
   return (
-    <div>
-      <SingleImageUpload
-        oldImage="http://localhost:3000/uploads/images/1775305223526.jpg"
-        onImageUpload={(e) => {}}
-        onDeleteImage={() => {}}
+    <Stack spacing="20px">
+      <PageHeader
+        title="Add Employee"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Employee", href: "/employee" },
+          { label: "Add Employee" },
+        ]}
       />
-    </div>
+      <FormEmployee type="add" />
+    </Stack>
   );
 };
 
