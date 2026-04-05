@@ -18,22 +18,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import BusinessIcon from "@mui/icons-material/Business";
+import PortraitIcon from "@mui/icons-material/Portrait";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFetchUserMe } from "@/services/fetch/fetchUserMe.service";
 import { LoadingState } from "@/components/feedback/LoadingState";
 
 const SIDEBAR_WIDTH = 240;
-
-const menuItems = [
-  { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { label: "Attendance", icon: <AccessTimeIcon />, path: "/attendance" },
-  { label: "Employees", icon: <PeopleIcon />, path: "/employees" },
-  { label: "Departments", icon: <BusinessIcon />, path: "/departments" },
-];
 
 interface Props {
   children: ReactNode;
@@ -63,6 +57,33 @@ export default function AppLayout({ children }: Props) {
 
     setDataUser();
   }, []);
+
+  const menuItems = useMemo(() => {
+    if (!user) return [];
+
+    const roleCode = user.role.code;
+
+    const items = [
+      { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+      { label: "Attendance", icon: <AccessTimeIcon />, path: "/attendance" },
+    ];
+
+    if (["ADMIN_HR"].includes(roleCode)) {
+      const restItems = [
+        {
+          label: "Employee Attendance",
+          icon: <PortraitIcon />,
+          path: "/employee-attendance",
+        },
+        { label: "Employees", icon: <PeopleIcon />, path: "/employees" },
+        { label: "Departments", icon: <BusinessIcon />, path: "/departments" },
+      ];
+
+      return [...items, ...restItems];
+    }
+
+    return items;
+  }, [user]);
 
   const sidebarContent = (
     <Box display="flex" flexDirection="column" height="100%">
