@@ -35,8 +35,6 @@ const LoginPage = () => {
       navigate("/dashboard");
     } catch (err: any) {
       const message = err?.response?.data?.message ?? "Login failed";
-      const status = err?.response?.status;
-      console.log({ status, message });
       setErrorMsg(message);
     }
   };

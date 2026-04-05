@@ -1,4 +1,4 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -25,10 +25,12 @@ import { useUploadImage } from "@/services/action/uploadImage.service";
 import { useToast } from "@/contexts/ToastContext";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useRegisterUser } from "@/pages/auth/register/services/registerUser.service";
+import type { User } from "../types/employee.type";
+import { useUpdateUser } from "../services/updateUser.service";
 
 interface FormEmployeeProps {
   type: "add" | "edit";
-  oldData?: any;
+  oldData?: User;
 }
 
 export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
@@ -41,8 +43,10 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
     useUploadImage();
   const { mutateAsync: registerUser, isPending: loadingRegisterUser } =
     useRegisterUser();
+  const { mutateAsync: updateEmployee, isPending: loadingUpdateUser } =
+    useUpdateUser();
 
-  const loadingSubmit = loadingRegisterUser;
+  const loadingSubmit = loadingRegisterUser || loadingUpdateUser;
 
   const {
     register,
@@ -51,6 +55,7 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
     setValue,
     getValues,
     formState: { errors },
+    reset,
   } = useForm<EmployeeForm>({
     // @ts-expect-error
     resolver: zodResolver(getEmployeeSchema(type)),
@@ -69,14 +74,12 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
       department_id: values.department_id?.id,
     };
 
-    console.log({ payload });
-
     try {
       if (type === "add") {
         await registerUser(payload);
         showToast({ message: "Employee added successfully" });
       } else {
-        // await updateEmployee({ id: oldData.id, payload });
+        await updateEmployee({ id: oldData?.id as string, payload });
         showToast({ message: "Employee updated successfully" });
       }
       setConfirmOpen(false);
@@ -94,11 +97,8 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
     if (file) {
       try {
         const res = await uploadImage(file);
-        console.log({ res });
         setValue("image_url", res.data.url);
       } catch (err: any) {
-        console.log({ err });
-
         showToast({
           message: err?.response?.data?.message ?? "Failed to upload image",
           severity: "error",
@@ -108,6 +108,20 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
       setValue("image_url", undefined);
     }
   };
+
+  useEffect(() => {
+    if (type === "edit" && oldData) {
+      reset({
+        ...oldData,
+        role_id: { id: oldData.role.id, name: oldData.role.name },
+        department_id: {
+          id: oldData.department.id,
+          name: oldData.department.name,
+        },
+        position: oldData.position ?? "",
+      });
+    }
+  }, [type, oldData]);
 
   return (
     <>
@@ -142,34 +156,36 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  label="Password *"
-                  type={showPassword ? "text" : "password"}
-                  size="small"
-                  fullWidth
-                  {...register("password")}
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword((prev) => !prev)}
-                          edge="end"
-                          size="small"
-                        >
-                          {showPassword ? (
-                            <VisibilityOffIcon fontSize="small" />
-                          ) : (
-                            <VisibilityIcon fontSize="small" />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+              {type === "add" && (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    label="Password *"
+                    type={showPassword ? "text" : "password"}
+                    size="small"
+                    fullWidth
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            edge="end"
+                            size="small"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon fontSize="small" />
+                            ) : (
+                              <VisibilityIcon fontSize="small" />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              )}
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
@@ -245,7 +261,7 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12 }}>
                 <Stack spacing="8px">
                   <Typography variant="body2" color="text.secondary">
                     Profile Photo
@@ -290,6 +306,7 @@ export const FormEmployee: FC<FormEmployeeProps> = ({ type, oldData }) => {
         okColor="primary"
         onOk={handleConfirmSubmit}
         onCancel={() => setConfirmOpen(false)}
+        loading={loadingSubmit}
       />
     </>
   );

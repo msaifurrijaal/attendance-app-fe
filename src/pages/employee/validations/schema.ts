@@ -30,3 +30,16 @@ export const getEmployeeSchema = (type: 'add' | 'edit') =>
   type === 'add' ? addEmployeeSchema : editEmployeeSchema;
 
 export type EmployeeForm = z.infer<typeof addEmployeeSchema>;
+
+export const updatePasswordSchema = z.object({
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, 'Password must contain letters and numbers'),
+  confirm_password: z.string().min(1, 'Confirm password is required'),
+}).refine((data) => data.password === data.confirm_password, {
+  message: 'Passwords do not match',
+  path: ['confirm_password'],
+});
+
+export type UpdatePasswordForm = z.infer<typeof updatePasswordSchema>;

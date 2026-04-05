@@ -28,7 +28,14 @@ interface RegisterUserResponse {
 export const useRegisterUser = () => {
   return useMutation({
     mutationFn: async (payload: RegisterUserPayload): Promise<RegisterUserResponse> => {
-      const { data } = await api.post('/auth/register', payload);
+      const modifiedPayload = {
+        ...payload,
+        phone: payload.phone || null,
+        address: payload.address || null,
+        image_url: payload.image_url || null,
+        position: payload.position || null
+      }
+      const { data } = await api.post('/auth/register', modifiedPayload);
       return data;
     },
     onSuccess: () => {

@@ -22,9 +22,7 @@ export interface UserMe {
   image_url: string | null;
   position: string | null;
   role: Role;
-  role_id: string;
   department: Department;
-  department_id: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

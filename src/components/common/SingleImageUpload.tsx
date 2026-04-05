@@ -2,7 +2,7 @@ import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DialogShowImage } from "./DialogShowImage";
 
 interface Props {
@@ -43,6 +43,10 @@ export const SingleImageUpload = ({
     e.preventDefault();
     if (imagePreview) setOpenShowImage(true);
   };
+
+  useEffect(() => {
+    if (oldImage) setImagePreview(oldImage);
+  }, [oldImage]);
 
   return (
     <>

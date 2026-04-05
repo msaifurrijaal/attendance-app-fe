@@ -98,7 +98,9 @@ export const SectionEmployeeTable = () => {
       flex: 0.5,
       renderCell: (params) => (
         <Stack direction="row" spacing="4px">
-          <IconButton onClick={() => console.log(params.row)}>
+          <IconButton
+            onClick={() => navigate(`/employee/edit/${params.row.id}`)}
+          >
             <ModeEditIcon color="primary" />
           </IconButton>
           <IconButton onClick={() => handleDeleteClick(params.row.id)}>
