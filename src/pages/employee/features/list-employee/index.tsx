@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, Stack } from "@mui/material";
-import { SectionEmployeeTable } from "./SectionEmployeeTable";
+import { SectionEmployeeTable } from "../../components/SectionEmployeeTable";
 
 const EmployeePage = () => {
   return (

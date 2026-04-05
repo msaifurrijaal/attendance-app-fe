@@ -8,7 +8,15 @@ import { RoleRoute } from "@/components/shared/RoleRoute";
 const LoginPage = lazy(() => import("../pages/auth/login"));
 const DashboardPage = lazy(() => import("../pages/dashboard"));
 const DepartmentPage = lazy(() => import("../pages/department"));
-const EmployeePage = lazy(() => import("../pages/employee"));
+const EmployeePage = lazy(
+  () => import("../pages/employee/features/list-employee"),
+);
+const AddEmployeePage = lazy(
+  () => import("../pages/employee/features/add-employee"),
+);
+const EditEmployeePage = lazy(
+  () => import("../pages/employee/features/edit-employee"),
+);
 
 const withLayout = (component: React.ReactNode) => (
   <AppLayout>
@@ -45,14 +53,43 @@ export const router = createBrowserRouter([
   },
   {
     path: "/employee",
-    element: (
-      <ProtectedRoute>
-        {withLayout(
-          <RoleRoute allowedRoles={["ADMIN_HR"]}>
-            <EmployeePage />
-          </RoleRoute>,
-        )}
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            {withLayout(
+              <RoleRoute allowedRoles={["ADMIN_HR"]}>
+                <EmployeePage />
+              </RoleRoute>,
+            )}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/employee/add",
+        element: (
+          <ProtectedRoute>
+            {withLayout(
+              <RoleRoute allowedRoles={["ADMIN_HR"]}>
+                <AddEmployeePage />
+              </RoleRoute>,
+            )}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/employee/edit/:id",
+        element: (
+          <ProtectedRoute>
+            {withLayout(
+              <RoleRoute allowedRoles={["ADMIN_HR"]}>
+                <EditEmployeePage />
+              </RoleRoute>,
+            )}
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);

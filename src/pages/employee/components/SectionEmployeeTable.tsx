@@ -10,19 +10,21 @@ import {
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
 import { useCallback, useState } from "react";
-import { useFetchInfiniteDepartment } from "./services/fetchInfiniteDepartment.service";
-import type { FilterTableState } from "./types/employee.type";
+import { useFetchInfiniteDepartment } from "../services/fetchInfiniteDepartment.service";
+import type { FilterTableState } from "../types/employee.type";
 import { debounce } from "lodash";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useToast } from "@/contexts/ToastContext";
-import { useGetUsers } from "./services/getUsers.service";
+import { useGetUsers } from "../services/getUsers.service";
 import { stringEmptyGuard } from "@/utils/guard";
-import { useDeleteUser } from "./services/deleteUser.service";
+import { useDeleteUser } from "../services/deleteUser.service";
+import { useNavigate } from "react-router-dom";
 
 export const SectionEmployeeTable = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
 
   const [page, setPage] = useState(0);
@@ -142,7 +144,7 @@ export const SectionEmployeeTable = () => {
             <Button
               variant="contained"
               fullWidth
-              onClick={() => console.log("add")}
+              onClick={() => navigate("/employee/add")}
             >
               Add Employee
             </Button>
