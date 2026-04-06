@@ -18,6 +18,9 @@ const EditEmployeePage = lazy(
   () => import("../pages/employee/features/edit-employee"),
 );
 const AttendancePage = lazy(() => import("../pages/attendance"));
+const EmployeeAttendancePage = lazy(
+  () => import("../pages/employee-attendance"),
+);
 
 const withLayout = (component: React.ReactNode) => (
   <AppLayout>
@@ -96,5 +99,17 @@ export const router = createBrowserRouter([
   {
     path: "/attendance",
     element: <ProtectedRoute>{withLayout(<AttendancePage />)}</ProtectedRoute>,
+  },
+  {
+    path: "/employee-attendance",
+    element: (
+      <ProtectedRoute>
+        {withLayout(
+          <RoleRoute allowedRoles={["ADMIN_HR"]}>
+            <EmployeeAttendancePage />
+          </RoleRoute>,
+        )}
+      </ProtectedRoute>
+    ),
   },
 ]);
