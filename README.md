@@ -58,6 +58,21 @@ Attendance App Frontend adalah antarmuka web yang terhubung dengan Attendance Ap
   - Login & Register dengan validasi form
   - Auto refresh token ketika sesi habis
   - Redirect otomatis berdasarkan role setelah login
+  - Register **hanya untuk Admin HR** — membutuhkan kode khusus
+  
+---
+
+## 🔑 Kode Registrasi Admin
+
+Halaman Register hanya diperuntukkan bagi **Admin HR**. Untuk membuat akun Admin HR baru, masukkan kode berikut pada field **Admin Code** saat registrasi:
+
+```bash
+I_AM_ADMIN_HR
+```
+
+> ⚠️ Kode ini bersifat rahasia. Jangan bagikan kepada karyawan biasa. Akun yang dibuat tanpa kode yang benar tidak akan berhasil terdaftar.
+
+---
 
 - 📊 **Dashboard** *(Admin HR)*
   - Ringkasan total absensi, completed, dan active
