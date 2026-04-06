@@ -67,12 +67,12 @@ export default function AppLayout({ children }: Props) {
     const roleCode = user.role.code;
 
     const items = [
-      { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
       { label: "Attendance", icon: <AccessTimeIcon />, path: "/attendance" },
     ];
 
     if (["ADMIN_HR"].includes(roleCode)) {
       const restItems = [
+        { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
         {
           label: "Employee Attendance",
           icon: <PortraitIcon />,
@@ -126,14 +126,17 @@ export default function AppLayout({ children }: Props) {
         ))}
       </List>
       <Divider />
-      <Box
-        p={2}
-        onClick={() => navigate("/profile")}
-        sx={{
-          cursor: "pointer",
-        }}
-      >
-        <Box display="flex" alignItems="center" gap={1} mb={1}>
+      <Box p={2}>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1}
+          mb={1}
+          onClick={() => navigate("/profile")}
+          sx={{
+            cursor: "pointer",
+          }}
+        >
           <Avatar
             sx={{
               width: 32,

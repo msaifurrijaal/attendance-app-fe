@@ -13,6 +13,6 @@ export const RoleRoute: FC<PropsWithChildren<Props>> = ({
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   if (!allowedRoles.includes(user.role.code))
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   return <>{children}</>;
 };
