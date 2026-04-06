@@ -73,6 +73,16 @@ const LoginPage = () => {
             Sign In
           </Button>
           {errorMsg && <Typography color="error">{errorMsg}</Typography>}
+          <Typography variant="body2" textAlign="center">
+            Don&apos;t have an account?{" "}
+            <Button
+              variant="text"
+              onClick={() => navigate("/register")}
+              size="small"
+            >
+              Sign Up
+            </Button>
+          </Typography>
         </Stack>
       </Stack>
     </AuthLayout>

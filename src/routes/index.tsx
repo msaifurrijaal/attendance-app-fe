@@ -6,6 +6,7 @@ import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
 import { RoleRoute } from "@/components/shared/RoleRoute";
 
 const LoginPage = lazy(() => import("../pages/auth/login"));
+const RegisterPage = lazy(() => import("../pages/auth/register"));
 const DetailUserPage = lazy(() => import("../pages/detail-user"));
 const DashboardPage = lazy(() => import("../pages/dashboard"));
 const DepartmentPage = lazy(() => import("../pages/department"));
@@ -37,6 +38,16 @@ export const router = createBrowserRouter([
       <GuestRoute>
         <Suspense fallback={<div>Loading...</div>}>
           <LoginPage />
+        </Suspense>
+      </GuestRoute>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <GuestRoute>
+        <Suspense fallback={<div>Loading...</div>}>
+          <RegisterPage />
         </Suspense>
       </GuestRoute>
     ),
