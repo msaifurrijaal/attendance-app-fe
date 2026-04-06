@@ -27,6 +27,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFetchUserMe } from "@/services/fetch/fetchUserMe.service";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { stringEmptyGuard } from "@/utils/guard";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 const SIDEBAR_WIDTH = 240;
 
@@ -41,8 +42,9 @@ export default function AppLayout({ children }: Props) {
 
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
   const { mutateAsync: fetchUserMe } = useFetchUserMe();
 
@@ -124,7 +126,13 @@ export default function AppLayout({ children }: Props) {
         ))}
       </List>
       <Divider />
-      <Box p={2}>
+      <Box
+        p={2}
+        onClick={() => navigate("/profile")}
+        sx={{
+          cursor: "pointer",
+        }}
+      >
         <Box display="flex" alignItems="center" gap={1} mb={1}>
           <Avatar
             sx={{
@@ -155,7 +163,7 @@ export default function AppLayout({ children }: Props) {
           </Box>
         </Box>
         <ListItemButton
-          onClick={() => console.log("logout")}
+          onClick={() => setLogoutConfirmOpen(true)}
           sx={{ borderRadius: "8px", color: "error.main" }}
         >
           <ListItemIcon sx={{ minWidth: 36, color: "error.main" }}>
@@ -164,6 +172,18 @@ export default function AppLayout({ children }: Props) {
           <ListItemText primary="Logout" />
         </ListItemButton>
       </Box>
+      <ConfirmationModal
+        open={logoutConfirmOpen}
+        title="Logout"
+        description="Are you sure you want to logout?"
+        okText="Logout"
+        okColor="error"
+        onOk={() => {
+          logout();
+          setLogoutConfirmOpen(false);
+        }}
+        onCancel={() => setLogoutConfirmOpen(false)}
+      />
     </Box>
   );
 

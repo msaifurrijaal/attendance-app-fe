@@ -22,6 +22,8 @@ import { useGetUsers } from "../services/getUsers.service";
 import { stringEmptyGuard } from "@/utils/guard";
 import { useDeleteUser } from "../services/deleteUser.service";
 import { useNavigate } from "react-router-dom";
+import { useGetAllUsers } from "../services/getAllUsers.service";
+import { exportEmployeeToExcel } from "../utils/exportEmployeeToExcel";
 
 export const SectionEmployeeTable = () => {
   const navigate = useNavigate();
@@ -35,6 +37,9 @@ export const SectionEmployeeTable = () => {
   });
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+
+  const { mutateAsync: getAllUsers, isPending: loadingExport } =
+    useGetAllUsers();
 
   const { data, isLoading } = useGetUsers({
     page: page + 1,
@@ -72,6 +77,19 @@ export const SectionEmployeeTable = () => {
     } catch (err: any) {
       showToast({
         message: err?.response?.data?.message ?? "Failed to delete",
+        severity: "error",
+      });
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      const res = await getAllUsers();
+      await exportEmployeeToExcel(res.data);
+      showToast({ message: "Successfully exported" });
+    } catch (err: any) {
+      showToast({
+        message: err?.response?.data?.message ?? "Failed to export",
         severity: "error",
       });
     }
@@ -152,8 +170,13 @@ export const SectionEmployeeTable = () => {
             </Button>
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
-            <Button variant="outlined" fullWidth>
-              Export Data
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={handleExport}
+              disabled={loadingExport}
+            >
+              {loadingExport ? "Exporting..." : "Export Data"}
             </Button>
           </Grid>
         </Grid>

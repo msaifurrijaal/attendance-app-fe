@@ -21,7 +21,6 @@ import {
 import { useUpdatePassword } from "../services/updatePassword.service";
 import { useToast } from "@/contexts/ToastContext";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -30,8 +29,6 @@ interface Props {
 }
 
 export const ModalUpdatePassword = ({ open, onCancel, userId }: Props) => {
-  const navigate = useNavigate();
-
   const { showToast } = useToast();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -68,7 +65,7 @@ export const ModalUpdatePassword = ({ open, onCancel, userId }: Props) => {
       await updatePassword({ id: userId, password: pendingValues.password });
       showToast({ message: "Password updated successfully" });
       setConfirmOpen(false);
-      navigate(-1);
+      handleClose();
     } catch (err: any) {
       showToast({
         message: err?.response?.data?.message ?? "Failed to update password",

@@ -6,6 +6,7 @@ import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
 import { RoleRoute } from "@/components/shared/RoleRoute";
 
 const LoginPage = lazy(() => import("../pages/auth/login"));
+const DetailUserPage = lazy(() => import("../pages/detail-user"));
 const DashboardPage = lazy(() => import("../pages/dashboard"));
 const DepartmentPage = lazy(() => import("../pages/department"));
 const EmployeePage = lazy(
@@ -21,6 +22,7 @@ const AttendancePage = lazy(() => import("../pages/attendance"));
 const EmployeeAttendancePage = lazy(
   () => import("../pages/employee-attendance"),
 );
+const IndexRedirect = lazy(() => import("../components/shared/IndexRedirect"));
 
 const withLayout = (component: React.ReactNode) => (
   <AppLayout>
@@ -38,6 +40,14 @@ export const router = createBrowserRouter([
         </Suspense>
       </GuestRoute>
     ),
+  },
+  {
+    path: "/",
+    element: <ProtectedRoute>{withLayout(<IndexRedirect />)}</ProtectedRoute>,
+  },
+  {
+    path: "/profile",
+    element: <ProtectedRoute>{withLayout(<DetailUserPage />)}</ProtectedRoute>,
   },
   {
     path: "/dashboard",
