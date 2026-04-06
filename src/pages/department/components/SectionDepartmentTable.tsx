@@ -122,7 +122,7 @@ export const SectionDepartmentTable = () => {
           color="primary"
           onClick={() => handleCreateEditClick(null)}
         >
-          Create Department
+          Add Department
         </Button>
       </Box>
 
